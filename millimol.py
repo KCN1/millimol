@@ -1,11 +1,17 @@
+"""Creates a class for a molecule (atoms, coordinates, bonds) and draws the molecule using matplotlib.pyplot."""
 from sys import argv
 from math import dist
+from typing import Tuple, List
+
 from scipy.spatial import KDTree
 import matplotlib.pyplot as plt
 
 
 class Molecule:
-
+    """
+    Describes a molecule as a set of atoms and bonds (connectivity). Bonds are determined by interatomic distance.
+    Virtual points in the middle of the bonds are added to color the bonds according to element colors.
+    """
     _atom_numbers = (
         'Bq', 'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F',
         'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 'K',
@@ -72,12 +78,12 @@ class Molecule:
         self.atom_colors = []
         self.read_xyz()
 
-    def from_orca_gauss(self):
-
+    def from_orca_gauss(self) -> Tuple[int, str, List[str], List[Tuple[float]]]:
+        """Parses Orca, Gaussian and Priroda output formats."""
         n, description, p, el = 0, '', [], []
         flag = 'red'  # start/stop flag for reading the data
         log_format = ''
-        geometries = 0  # to store all geometries (for next version)
+        geometries = 0  # to navigate through all geometries (for next versions)
         n0, p0, el0 = 0, [], []  # current number of atoms, coordinates, elements
 
         with open(self.filename, 'r') as file:
@@ -92,11 +98,12 @@ class Molecule:
                 elif 'Priroda' in line:
                     log_format = 'priroda'
                     break
+                # TODO: add Gamess/Firefly format
                 # elif 'GAMESS' in line:
                 #     log_format = 'gamess'
 
             line = file.readline()
-            if log_format == 'orca':    # check if there is a description
+            if log_format == 'orca':    # check for a description
                 while line and 'END OF INPUT' not in line:
                     if '|  1> #' in line:
                         description = line.lstrip('|  1> #').strip()
@@ -146,11 +153,10 @@ class Molecule:
                         el = el0.copy()  # last list of els
                         n0, p0, el0 = 0, [], []
                         geometries += 1
-        # print(geometries)
         return n, description, el, p
 
     def from_trj_xyz(self):
-
+        """Parses .xyz atom coordinate format."""
         n, description, p, el = 0, '', [], []
         geometries = 0
         n0, p0, el0 = 0, [], []  # current number of atoms, their coordinates, elements
@@ -161,8 +167,8 @@ class Molecule:
             while line:
                 n0 = int(line.strip())
                 description = file.readline().strip()
-                # create a coordinate array
-                # create an element array
+
+                # create an element array and a coordinate array
                 for i in range(n0):
                     s = file.readline().split()
                     p_i = (float(s[-3]), float(s[-2]), float(s[-1]))
@@ -174,13 +180,12 @@ class Molecule:
                 n0, p0, el0 = 0, [], []
                 geometries += 1
                 line = file.readline()
-        # print(geometries)
         return n, description, el, p
 
     def read_xyz(self):
-        """Creates connectivity list from a list of coordinates"""
+        """Creates a connectivity list from a list of coordinates"""
 
-        # read and translate with dictionary
+        # check atomic coordinates file format
         if self.filename[-4:] == '.xyz':
             self.n, self.description, self.elements, self.points = self.from_trj_xyz()
         elif self.filename[-4:] in ('.log', '.out'):
@@ -225,13 +230,8 @@ class Molecule:
                 self.unconnected.discard(j)
 
 
-if __name__ == "__main__":
-
-    if len(argv) >= 2:
-        filename = argv[-1]
-    else:
-        filename = input('Enter filename\n')
-    molecule = Molecule(filename)
+def main(molecule: Molecule):
+    """Draws a molecule using pyplot"""
 
     # pyplot window settings
     plt.style.use('dark_background')
@@ -255,3 +255,13 @@ if __name__ == "__main__":
     ax._axis3don = False
 
     plt.show()
+
+
+if __name__ == '__main__':
+    # TODO: add async timer to load the file periodically
+    if len(argv) >= 2:
+        filename = argv[-1]
+    else:
+        filename = input('Enter filename\n')
+    molecule = Molecule(filename)
+    main(molecule)
