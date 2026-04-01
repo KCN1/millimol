@@ -35,7 +35,7 @@ def draw_molecule(
     color_map: colormap to use, e.g. {1: "red", 2: [255, 0, 0], 3: "#FF0000"}
     To draw all atoms as spheres, point_indices should contain array of atoms.
     """
-    MESH_PARAMS = dict(
+    mesh_params = dict(
         cmap=color_map,
         clim=(-0.5, len(color_map) - 0.5),
         n_colors=len(color_map),
@@ -57,7 +57,7 @@ def draw_molecule(
         mesh,
         scalars=color_nums[pair_indices[:, 0]],
         **PLOTTER_PARAMS,
-        **MESH_PARAMS
+        **mesh_params
     )
     # draw points
     if len(point_indices):
@@ -65,7 +65,7 @@ def draw_molecule(
             mesh.points[point_indices],
             scalars=color_nums[point_indices],
             **PLOTTER_PARAMS,
-            **MESH_PARAMS
+            **mesh_params
         )
     plotter.show(title=mol_name)
 

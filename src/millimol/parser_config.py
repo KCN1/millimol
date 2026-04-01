@@ -1,4 +1,7 @@
-from backports.strenum import StrEnum
+try:
+    from enum import StrEnum  # Python 3.11+
+except ImportError:
+    from backports.strenum import StrEnum  # Python 3.8 - 3.10
 from collections import namedtuple
 from types import MappingProxyType
 

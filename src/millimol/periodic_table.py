@@ -115,7 +115,7 @@ PeriodicTable = np.array([
 ], dtype=_ElementNP)
 
 
-PeriodicTable.flags['WRITEABLE'] = False
+PeriodicTable.flags['WRITABLE'] = False
 
 
 class _ElementEnum(IntEnum):
