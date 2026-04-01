@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
-from blueprint import MoleculeBlueprint
+from mol_blueprint import MoleculeBlueprint
 from plot_config import COLORMAP
-from molecule import Molecule
-from parser import MoleculeParser
+from mol_parser import MoleculeParser
 from plot_pyvista import draw_molecule
 
 
 def view_molecule(filename: Path) -> None:
     """
-    Driver function of molecule viewer.
+    Driver function of molecular viewer.
     
     1. Parse file to get last geometry.
     2. Prepare molecule for drawing.

@@ -7,6 +7,7 @@ _ElementNP = np.dtype([('number', 'i8'), ('name', 'U2'), ('mass', 'f8'), ('radiu
 
 
 PeriodicTable = np.array([
+#   number  name    mass            radius
 (   0,      'Bq',   0.0,           -3.00    ),
 (   1,      'H',    1.008,          0.35    ),
 (   2,      'He',   4.0026,         0.28    ),
