@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python3 /src/millimol/viewer.py "$@"
+python3 src/millimol/viewer.py "$@"
