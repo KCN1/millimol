@@ -27,13 +27,16 @@ def draw_molecule(
 ) -> None:
     """
     Main function to draw molecule (MoleculeBlueprint) with Pyvista.
+    See also: mol_blueprint.MoleculeBlueprint.__doc__
     
-    coords: coordinates of points (atoms and virtual middle points),
-    pair_indices: indices of bound pairs of points to draw lines,
-    point_indices: indices of unbound points to draw points as spheres,
-    color_nums: color indices in color_map
+    coords: coordinates of points ("real" atoms and "virtual" middle points),
+    pair_indices: indices of bound pairs of points to draw them as lines,
+    point_indices: indices of unbound points to draw them as spheres*,
+    color_nums: color indices in color_map**,
     color_map: colormap to use, e.g. {1: "red", 2: [255, 0, 0], 3: "#FF0000"}
-    To draw all atoms as spheres, point_indices should contain array of atoms.
+    
+    * To draw all atoms as spheres, point_indices should contain all atoms.
+    ** The line color is determined by its first point (a "real" atom).
     """
     mesh_params = dict(
         cmap=color_map,

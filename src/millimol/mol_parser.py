@@ -23,22 +23,24 @@ class MoleculeParser:
                     if ff.format_trigger and (ff.format_trigger in line):
                         self.file_format = ff
 
-    def _seek_xyz(self, fp: TextIO) -> None:
+    def _seek_coords(self, fp: TextIO) -> None:
+        """Find the trigger to start reading coordinates"""
         if self.file_format.read_trigger:
             for line in fp:
                 if self.file_format.read_trigger in line:
                     break
 
-    def _parse_xyz(self, fp: TextIO) -> Molecule:
+    def _parse_coords(self, fp: TextIO) -> Molecule:
+        """Read the coordinates starting from given point"""
         seek_flag = True
         element_list = []
-        xyz_list = []
+        coords_list = []
         for line in fp:
             if match := re.match(self.file_format.regex_, line):
                 element_list.append(
                     Element._map_[match.group(self.file_format.group_[0])]
                 )
-                xyz_list.append(
+                coords_list.append(
                     tuple(map(match.group, self.file_format.group_[1:]))
                 )
                 seek_flag = False
@@ -46,7 +48,7 @@ class MoleculeParser:
                 continue
             else:
                 break
-        return Molecule(element_list, xyz_list)
+        return Molecule(element_list, coords_list)
 
     def parse(self, calc_bonds=True, all_geoms=True) -> List[Molecule]:
         """
@@ -57,15 +59,15 @@ class MoleculeParser:
         """
         geometries = []
         with open(self.filename, 'r') as fp:
-            self._seek_xyz(fp)
-            while molecule := self._parse_xyz(fp):
+            self._seek_coords(fp)
+            while molecule := self._parse_coords(fp):
                 if all_geoms:
                     if calc_bonds:
                         molecule.calc_bonds()
                     geometries.append(molecule)
                 else:
                     geometries = [molecule]
-                self._seek_xyz(fp)
+                self._seek_coords(fp)
         if calc_bonds and not all_geoms:
             geometries[-1].calc_bonds()
         return geometries

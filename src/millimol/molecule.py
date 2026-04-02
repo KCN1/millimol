@@ -10,7 +10,7 @@ class Molecule:
     """
     Container class for atomic coordinates and bonds (pairs of atom indices).
     
-    Accept element list as numpy array (N) or collection of integers / Element enums.
+    Accept element list as numpy array (N) or a list of integers / Element enums.
     Accept coordinates as numpy array (N, 3) or a list of tuples / lists.
     Accept bonds as numpy array of indices (atom numbering starts from 0).
     """
@@ -33,6 +33,7 @@ class Molecule:
     
     @property
     def atoms(self) -> NDArray:
+        """Return atoms as numpy records array (element number, x, y, z)"""
         return np.rec.fromarrays(
             (self.elements, *self.coords.T),
             names=('elements', 'x', 'y', 'z')
