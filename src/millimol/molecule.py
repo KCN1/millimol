@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import numpy as np
 from numpy.typing import NDArray
 from scipy.spatial import KDTree
@@ -14,9 +14,15 @@ class Molecule:
     Accept coordinates as numpy array (N, 3) or a list of tuples / lists.
     Accept bonds as numpy array of indices (atom numbering starts from 0).
     """
-    elements: NDArray = np.zeros(0, dtype=np.int64)
-    coords: NDArray = np.zeros((0, 3), dtype=np.float64)
-    bonds: NDArray = np.zeros((0, 2), dtype=np.int64)
+    elements: NDArray[np.floating] = field(
+        default_factory=lambda: np.zeros(shape=(0,), dtype=np.int64)
+    )
+    coords: NDArray[np.floating] = field(
+        default_factory=lambda: np.zeros(shape=(0, 3), dtype=np.float64)
+    )
+    bonds: NDArray[np.integer] = field(
+        default_factory=lambda: np.zeros(shape=(0, 2), dtype=np.int64)
+    )
     
     def __post_init__(self):
         assert len(self.elements) == len(self.coords)
@@ -36,7 +42,9 @@ class Molecule:
         """Return atoms as numpy records array (element number, x, y, z)"""
         return np.rec.fromarrays(
             (self.elements, *self.coords.T),
-            names=('elements', 'x', 'y', 'z')
+            dtype=np.dtype(
+                [('elements', 'U2'), ('x', 'i8'), ('y', 'i8'), ('z', 'i8')]
+            )
         )
     
     def calc_bonds(self) -> None:
