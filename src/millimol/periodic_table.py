@@ -1,3 +1,8 @@
+"""
+PeriodicTable contains element numbers, names, atomic masses and covalent radii.
+Element is IntEnum, can be used as Element.H, Element(1), Element['H'].
+Element._map_ is a dict to get elements by name, number or str(number).
+"""
 import numpy as np
 from enum import IntEnum
 from types import MappingProxyType

@@ -9,7 +9,7 @@ from plot_pyvista import draw_molecule
 
 def view_molecule(filename: Path) -> None:
     """
-    Driver function of molecular viewer.
+    Driver function of the molecular viewer.
     
     1. Parse file to get last geometry.
     2. Prepare molecule for drawing.
@@ -25,7 +25,7 @@ def view_molecule(filename: Path) -> None:
         bp.unbound,
         bp.elements,
         COLORMAP,
-        'Black'
+        [0, 0, 0]
     )
 
 
